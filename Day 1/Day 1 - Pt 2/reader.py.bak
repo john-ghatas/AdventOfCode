@@ -1,0 +1,51 @@
+#!/usr/bin/python
+import sys
+import resource
+resource.setrlimit(resource.RLIMIT_STACK, (2**29, -1))
+sys.setrecursionlimit(10**6)
+# Define functions here
+
+
+def parse_array(base, index, numbers_list, max_index, iter=0):
+
+    if(index >= max_index - 2):
+        base = base + 1
+        index = 0
+
+    if(index == base):
+        index = index + 1
+
+    if(base > max_index - 1):
+        print("Not found, womp womp")
+        return False
+    else:
+        current_sum = numbers_list[base] + \
+            numbers_list[index] + numbers_list[index + 1]
+        negative_sum_index = numbers_list[index - 2] + \
+            numbers_list[index - 1] + numbers_list[index] if index > 2 else 0
+        positive_sum_index = numbers_list[index + 2] + \
+            numbers_list[index + 1] + \
+            numbers_list[index] if index < max_index - 2 else 0
+
+        if(current_sum == 2020 or negative_sum_index == 2020 or positive_sum_index == 2020):
+            print(f"Needed {iter} iterations")
+            print(
+                f"The sum of {[numbers_list[base], numbers_list[index], numbers_list[index + 1]]} equal to 2020. Multiplying these numbers results in {numbers_list[base] * numbers_list[index] * numbers_list[index + 1]}")
+            return True
+
+    parse_array(base, index + 1, numbers_list, max_index, iter + 1)
+
+
+# Read file and dump all lines
+numbers = open('../numbers.txt', 'r')
+all_numbers = numbers.readlines()
+parsed_numbers = []
+
+# Prase the lines and put them in an array
+for number in all_numbers:
+    parsed_numbers.append(int(number))
+
+max_index = len(parsed_numbers)
+
+
+parse_array(0, 1, parsed_numbers, max_index)
